@@ -1,0 +1,26 @@
+https://github.com/firica/legalai/blob/main/app.py
+
+
+# OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
+
+llm = Ollama(model=OLLAMA_MODEL, base_url=OLLAMA_BASE_URL)
+
+# -----------------------------------------------------------------------------
+# Agent
+# -----------------------------------------------------------------------------
+tools = [sparql_query, sql_query]
+
+
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", SYSTEM_PROMPT),
+        ("human", "{input}"),
+        ("scratchpad", "{agent_scratchpad}"),
+    ]
+)
+
+agent = create_react_agent(llm=llm, tools=tools, prompt=prompt)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
+
+

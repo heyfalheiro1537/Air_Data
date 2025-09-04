@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+langchain
+langchain-community
+rdflib
+rdflib-sqlalchemy
+sqlalchemy
+pydantic
