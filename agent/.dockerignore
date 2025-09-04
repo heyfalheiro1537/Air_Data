@@ -1,0 +1,16 @@
+# Ignorar ambientes virtuais
+.venv
+__pycache__/
+*.pyc
+*.pyo
+
+# Git
+.git
+.gitignore
+
+# Logs e temporários
+*.log
+*.tmp
+
+# Evitar enviar index vetorial para a imagem (usar volume)
+chroma/*
