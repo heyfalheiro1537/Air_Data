@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
 from agent.common.models.ask_body import AskBody
-from agent.core.agent import build_agent
+from agent.core.config.agent import build_agent
 
 
 @asynccontextmanager

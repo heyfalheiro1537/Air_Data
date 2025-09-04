@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from langchain_core.tools import tool
 
-from agent.core.config.connection.triplestore import Triplestore
+from agent.core.config.triplestore import Triplestore
 from agent.core.tools.utils import build_retriever
 
 
