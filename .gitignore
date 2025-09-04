@@ -1,0 +1,31 @@
+# Ambiente virtual
+.venv/
+venv/
+
+# Arquivos de ambiente
+.env
+*.env
+
+# Cache e bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs e temporários
+*.log
+*.tmp
+*.swp
+
+# Build / dist
+build/
+dist/
+*.egg-info/
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# Dados persistentes locais (não subir embeddings no Git!)
+chroma/
+fuseki_data/
