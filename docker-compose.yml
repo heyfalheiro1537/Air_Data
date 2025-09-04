@@ -26,7 +26,6 @@ services:
       - SPARQL_QUERY_URL=http://fuseki:3030/ds/sparql
       - SPARQL_UPDATE_URL=http://fuseki:3030/ds/update
       - SPARQL_DATA_URL=http://fuseki:3030/ds/data
-      - READ_ONLY=true
     ports:
       - "8080:8080" 
     

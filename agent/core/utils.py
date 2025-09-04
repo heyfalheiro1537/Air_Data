@@ -1,6 +1,9 @@
 import json as JS
 import os as OS
 
+# process
+
+
 ARTICLES_FILE = "articles.json"
 ARTICLES_FOLDER = "articles"
 DB_FOLDER = "chroma_storage"

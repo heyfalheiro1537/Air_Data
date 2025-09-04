@@ -1,3 +1,9 @@
+def create_tools():
+    pass
+
+
+# here we are going to define tool
+
 # @tool("sparql_query", return_direct=False)
 # def sparql_query(query: str) -> str:
 #     """Run a SPARQL SELECT/ASK/DESCRIBE/CONSTRUCT against the local RDFLib store.

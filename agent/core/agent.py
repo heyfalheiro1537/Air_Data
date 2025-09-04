@@ -4,6 +4,7 @@ from typing import Optional, Dict, Any, List
 
 from langchain_community.llms import Ollama
 from langchain_community.embeddings import OllamaEmbeddings
+from agent.core.config.system_prompt import SYSTEM_PROMPT
 from langchain_chroma import Chroma
 
 from langchain_core.tools import tool
@@ -17,8 +18,6 @@ OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
 
 CHROMA_DIR = os.getenv("CHROMA_DIR", "/app/chroma")
 CHROMA_COLLECTION = os.getenv("CHROMA_COLLECTION", "docs")
-
-READ_ONLY = os.getenv("READ_ONLY", "true").lower() == "true"
 
 
 def build_llm() -> Ollama:
@@ -40,14 +39,17 @@ def build_agent() -> AgentExecutor:
     llm = build_llm()
 
     tools = []
-    # RAG tool (optional—only if you’ve indexed docs in Chroma)
-    retriever = build_retriever()
-    tools.append(make_retriever_tool(retriever))
 
-    # SPARQL tool (only if env URL is provided)
-    s_tool = make_sparql_tool()
-    if s_tool:
-        tools.append(s_tool)
+    # RAG tool (optional—only if you’ve indexed docs in Chroma)
+
+    retriever = build_retriever()
+
+    # tools.append(make_retriever_tool(retriever))
+
+    # # SPARQL tool (only if env URL is provided)
+    # s_tool = make_sparql_tool()
+    # if s_tool:
+    #     tools.append(s_tool)
 
     prompt = ChatPromptTemplate.from_messages(
         [

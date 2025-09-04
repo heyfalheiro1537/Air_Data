@@ -6,6 +6,8 @@ import fitz  # PyMuPDF
 from chromadb.utils import embedding_functions
 import chromadb
 
+# TODO: load chroma
+
 
 def pdf_to_text(url):
     try:
