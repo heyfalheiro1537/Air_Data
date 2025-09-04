@@ -1,4 +1,4 @@
-import utils as Utils
+import agent.core.utils.utils as Utils
 import os as OS
 from tqdm import tqdm
 import requests
@@ -6,7 +6,7 @@ import fitz  # PyMuPDF
 from chromadb.utils import embedding_functions
 import chromadb
 
-# TODO: load chroma
+# TODO: redo to process first the brazilian civil aeronautics act
 
 
 def pdf_to_text(url):

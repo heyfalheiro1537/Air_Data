@@ -1,61 +1,117 @@
-def create_tools():
-    pass
+import os
+from typing import List, Optional
 
 
-# here we are going to define tool
+from langchain_core.tools import tool
 
-# @tool("sparql_query", return_direct=False)
-# def sparql_query(query: str) -> str:
-#     """Run a SPARQL SELECT/ASK/DESCRIBE/CONSTRUCT against the local RDFLib store.
-#     Input: SPARQL string."""
-#     try:
-#         qres = rdf_graph.query(query)
-#         # Convert result to a readable string
-#         if qres.type == "ASK":
-#             return str(bool(qres.askAnswer))
-#         elif qres.type == "CONSTRUCT":
-#             g = Graph()
-#             for t in qres.graph.triples((None, None, None)):
-#                 g.add(t)
-#             return g.serialize(format="turtle").decode("utf-8")
-#         else:
-#             # SELECT or DESCRIBE falls here via rdflib behavior (DESCRIBE often returns a Graph)
-#             if hasattr(qres, "vars"):  # SELECT-like
-#                 headers = [str(v) for v in qres.vars]
-#                 rows = []
-#                 for row in qres:
-#                     rows.append([str(val) if val is not None else "" for val in row])
-#                 # simple TSV
-#                 out = "\t".join(headers) + "\n"
-#                 out += "\n".join("\t".join(r) for r in rows)
-#                 return out
-#             else:
-#                 # fallback: try graph serialization
-#                 try:
-#                     return qres.serialize(format="turtle").decode("utf-8")
-#                 except Exception:
-#                     return str(list(qres))
-#     except Exception as e:
-#         return f"SPARQL error: {e}"
+from agent.core.config.connection.triplestore import Triplestore
+from agent.core.tools.utils import build_retriever
 
 
-# @tool("sql_query", return_direct=False)
-# def sql_query(sql: str) -> str:
-#     """Run a read-only SQL query against the relational DB. Input: SQL string (SELECT only)."""
-#     try:
-#         sql_lower = sql.strip().lower()
-#         if not sql_lower.startswith("select"):
-#             return "Only SELECT queries are allowed in this tool."
-#         with engine.connect() as conn:
-#             rs = conn.execute(text(sql))
-#             rows = rs.mappings().all()
-#             if not rows:
-#                 return "[]"
-#             # format as TSV
-#             headers = list(rows[0].keys())
-#             out = "\t".join(headers) + "\n"
-#             for r in rows:
-#                 out += "\t".join([str(r[h]) for h in headers]) + "\n"
-#             return out.strip()
-#     except Exception as e:
-#         return f"SQL error: {e}"
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
+OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
+CHROMA_DIR = os.getenv("CHROMA_DIR", "/app/chroma")
+CHROMA_COLLECTION = os.getenv("CHROMA_COLLECTION", "docs")
+
+
+def get_tools():
+    return [make_retriever_tool(), make_sparql_tool()]
+
+
+def make_retriever_tool():
+    retriever = build_retriever()
+
+    @tool("retrieve_docs", return_direct=False)
+    def retrieve_docs(question: str) -> str:
+        """Return top-K chunks from the vector store related to the question."""
+        docs = retriever.invoke(question)
+        if not docs:
+            return "no docs"
+        parts = []
+        for d in docs[:4]:
+            meta = d.metadata or {}
+            src = meta.get("source") or meta.get("path") or "unknown"
+            parts.append(f"[{src}] {d.page_content[:800]}")
+        return "\n---\n".join(parts)
+
+    return retrieve_docs
+
+
+def make_sparql_tool(
+    store: Triplestore = Triplestore(),
+    *,
+    read_only: bool = True,
+    default_construct_format: str = "turtle",
+    max_rows: int = 1000,
+    allowed_write_verbs: Optional[List[str]] = None,
+):
+    """
+    Create a LangChain tool named 'sparql_query'.
+
+    - SELECT: returns TSV (header + rows), capped at max_rows.
+    - ASK: returns "true"/"false".
+    - CONSTRUCT/DESCRIBE: returns serialized graph (default Turtle).
+    - UPDATE (INSERT/DELETE/...): only if read_only=False and verb allowed.
+    """
+    if allowed_write_verbs is None:
+        # SPARQL 1.1 Update verbs (subset)
+        allowed_write_verbs = [
+            "INSERT",
+            "DELETE",
+            "WITH",
+            "LOAD",
+            "CLEAR",
+            "CREATE",
+            "DROP",
+            "ADD",
+            "MOVE",
+            "COPY",
+        ]
+
+    def _is_write(q_upper: str) -> bool:
+        return any(q_upper.startswith(verb) for verb in allowed_write_verbs)
+
+    @tool("sparql_query", return_direct=False)
+    def sparql_query(sparql: str) -> str:
+        try:
+            q = sparql.strip()
+            q_upper = q.upper()
+
+            # Writes (guarded)
+            if _is_write(q_upper):
+                if read_only:
+                    return "Write blocked: read-only mode."
+                store.update(q)
+                return "OK"
+
+            # ASK
+            if q_upper.startswith("ASK"):
+                return "true" if store.ask(q) else "false"
+
+            # CONSTRUCT / DESCRIBE
+            if q_upper.startswith("CONSTRUCT") or q_upper.startswith("DESCRIBE"):
+                return store.construct(q, fmt=default_construct_format)
+
+            # SELECT (default)
+            rows = store.select(q)
+            if not rows:
+                return "empty"
+
+            # Enforce row cap
+            rows = rows[:max_rows]
+
+            headers = list(rows[0].keys())
+            # TSV (header + rows)
+            out = "\t".join(headers) + "\n"
+            out += "\n".join(
+                "\t".join(str(r.get(h, "")) for h in headers) for r in rows
+            )
+            return out
+
+        except PermissionError as e:
+            return f"SPARQL permission error: {e}"
+        except Exception as e:
+            return f"SPARQL error: {e}"
+
+    return sparql_query

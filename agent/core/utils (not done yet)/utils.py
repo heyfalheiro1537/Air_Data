@@ -1,7 +1,7 @@
 import json as JS
 import os as OS
 
-# process
+# remake this to test the brazilian civil aeronautics act articles
 
 
 ARTICLES_FILE = "articles.json"

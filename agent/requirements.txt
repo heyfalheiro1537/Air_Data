@@ -2,7 +2,6 @@ fastapi
 uvicorn[standard]
 langchain
 langchain-community
+langchain_chroma
 rdflib
-rdflib-sqlalchemy
-sqlalchemy
 pydantic
