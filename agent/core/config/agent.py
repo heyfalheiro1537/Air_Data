@@ -1,8 +1,8 @@
 import os
 
-from langchain_community.llms import Ollama
-from agent.core.config.system_prompt import SYSTEM_PROMPT
-from agent.core.tools.tools import get_tools
+from langchain_ollama import ChatOllama
+# from agent.core.config.system_prompt import SYSTEM_PROMPT
+# from agent.core.tools.tools import get_tools
 
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain.prompts import ChatPromptTemplate
@@ -11,9 +11,13 @@ from langchain.prompts import ChatPromptTemplate
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
 
+# set up downloading in docker, now begin test locally
 
-def build_llm() -> Ollama:
-    return Ollama(model=OLLAMA_MODEL, base_url=OLLAMA_BASE_URL)
+
+def build_llm() -> ChatOllama:
+    return ChatOllama(
+        model="gpt-oss:20b", validate_model_on_init=True, temperature=0.8, verbose=True
+    )
 
 
 def build_agent() -> AgentExecutor:
@@ -30,3 +34,9 @@ def build_agent() -> AgentExecutor:
 
     agent = create_react_agent(llm=llm, tools=tools, prompt=prompt)
     return AgentExecutor(agent=agent, tools=tools, verbose=False)
+
+
+if __name__ == "__main__":
+    llm = build_llm()
+    response = llm.invoke("What is the capital of France?")
+    print(response)

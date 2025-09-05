@@ -29,7 +29,7 @@ class Triplestore:
         self._ustore.open((query_url, update_url))
         self._ugraph = Graph(store=self._ustore)
 
-    def select(self, query: str) -> List[Dict[str, Any]]:
+    def select(self, query: str) -> List[Dict[str, Any]]:  # create DataModels
         """
         Returns a list of dicts with stringified values.
         """
@@ -49,14 +49,14 @@ class Triplestore:
         except Exception as e:
             raise RuntimeError(f"SPARQL SELECT error: {e}") from e
 
-    def ask(self, query: str) -> bool:
+    def ask(self, query: str) -> bool:  # create DataModels
         try:
             result = self._qgraph.query(query)
             return bool(result.askAnswer)  # rdflib exposes askAnswer for ASK queries
         except Exception as e:
             raise RuntimeError(f"SPARQL ASK error: {e}") from e
 
-    def construct(self, query: str, fmt: str = "turtle") -> str:
+    def construct(self, query: str, fmt: str = "turtle") -> str:  # create DataModels
         """
         Returns serialized graph (default Turtle) for CONSTRUCT/DESCRIBE.
         """
