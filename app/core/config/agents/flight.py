@@ -1,4 +1,4 @@
-from app.core.models.data.chat_agent import BaseChatModule
+from app.core.models.interface.chat_agent import BaseChatModule
 
 tools = []
 

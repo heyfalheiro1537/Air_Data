@@ -2,8 +2,10 @@ from langchain_ollama import ChatOllama
 from langgraph.prebuilt import create_react_agent
 from langgraph_supervisor import create_supervisor
 
+from app.core.models.interface.model import export_model
 
-model = "qwen3:0.6b"
+
+model = export_model()
 
 
 class BaseChatModule:

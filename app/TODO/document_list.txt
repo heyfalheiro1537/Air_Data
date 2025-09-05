@@ -1,0 +1,37 @@
+Código Brasileiro de Aeronáutica (Lei nº 7.565/1986)
+ Define princípios gerais da aviação civil no Brasil, espaço aéreo, aeronavegabilidade, investigação de acidentes e sanções.
+
+
+Lei do Aeronauta (Lei nº 7.183/1984)
+ Regula os direitos, deveres, jornadas, descanso e remuneração dos tripulantes.
+
+
+RBAC (Regulamentos Brasileiros da Aviação Civil) e RBHA (Regulamentos Brasileiros de Homologação Aeronáutica)
+ Normas emitidas pela ANAC para operações de voo, manutenção, certificação, licenças e segurança.
+
+
+IS (Instruções Suplementares)
+ Complementam os RBAC e RBHA com detalhamentos técnicos adicionais.
+
+
+ICA (Instruções do Comando da Aeronáutica)
+ Publicadas pelo DECEA, definem procedimentos operacionais, regras de tráfego aéreo e protocolos de resposta a incidentes.
+
+
+Publicações aeronáuticas no ciclo AIRAC (AIS/AIP/AISWEB)
+ Informações atualizadas a cada 28 dias sobre cartas aeronáuticas, procedimentos e serviços de navegação aérea.
+
+
+Anexos da Convenção de Chicago (ICAO SARPs – Standards and Recommended Practices)
+ Normas e práticas recomendadas de adoção global.
+
+
+PANS (Procedures for Air Navigation Services)
+ Procedimentos complementares da ICAO para navegação aérea.
+
+
+Outros documentos técnicos da ICAO
+ Incorporados ao e-AIP brasileiro e sincronizados com os ciclos AIRAC.
+
+
+Supervisor tem que entender melhor contexto talvez

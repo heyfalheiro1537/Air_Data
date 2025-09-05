@@ -8,7 +8,7 @@ from app.core.config.agents.weather import WeatherAgent
 from app.core.config.agents.norms import NormAgent
 from app.core.config.agents.flight import FlightAgent
 from app.core.config.system_prompt import SYSTEM_PROMPT
-from app.core.models.data.chat_agent import BaseSupervisorModule
+from app.core.models.interface.chat_agent import BaseSupervisorModule
 
 agents = [
     FlightAgent().module,
@@ -26,4 +26,9 @@ class SupervisorAgent(BaseSupervisorModule):
 
 if __name__ == "__main__":
     supervisor = SupervisorAgent()
-    print(supervisor.call("O que você pode fazer?"))
+    try:
+        while True:
+            user_input = input("Pergunta: ")
+            print(supervisor.call(user_input))
+    except KeyboardInterrupt:
+        print("\nEncerrando supervisor.")
