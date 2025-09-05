@@ -1,4 +1,3 @@
-import agent.core.utils.utils as Utils
 import os as OS
 from tqdm import tqdm
 import requests

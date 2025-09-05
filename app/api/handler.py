@@ -1,12 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
-from agent.common.models.ask_body import AskBody
-from agent.core.config.agent import build_agent
+from core.models.requests.ask_body import AskBody
+from app.core.config.supervisor import SupervisorAgent
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.agent = build_agent()
+    app.state.agent = SupervisorAgent()
     yield
 
 
@@ -22,5 +22,5 @@ def health():
 def ask(body: AskBody):
     if not body.question:
         raise HTTPException(400, "question required")
-    out = app.state.agent.invoke({"input": body.question})
-    return {"answer": out.get("output", "")}
+    out = app.state.agent.call(body.question)
+    return {"answer": out}
