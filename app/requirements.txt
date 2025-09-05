@@ -1,9 +1,11 @@
 fastapi
 uvicorn[standard]
 
-# LangChain + community integrations (Ollama, etc.)
+# LangChain (Ollama, etc.)
 langchain
-langchain-community
+langchain_ollama
+langgraph
+langgraph_supervisor
 
 # Vector store
 langchain-chroma
@@ -11,7 +13,7 @@ chromadb
 tqdm
 
 # Embeddings/Docs utils
-PyMuPDF
+PyPDF2
 
 # RDF / SPARQL
 rdflib
