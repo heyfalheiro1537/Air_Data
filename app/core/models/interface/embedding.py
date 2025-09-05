@@ -101,15 +101,15 @@ class EmbeddingProcessor:
         if to_add_texts:
             print(f"Adicionando {len(to_add_texts)} novos chunks…")
             # add in batches to keep memory steady
-            B = 300
+            B = 10
             for i in range(0, len(to_add_texts), B):
+                print(f"Adicionando chunks {i} a {i + B}...")
                 self.vectorstore.add_texts(
                     texts=to_add_texts[i : i + B],
                     metadatas=to_add_metas[i : i + B],
                     ids=to_add_ids[i : i + B],
                 )
-            self.vectorstore.persist()
-            print("Persistido.")
+
         else:
             print("Nada novo para adicionar (índice já atualizado).")
 
